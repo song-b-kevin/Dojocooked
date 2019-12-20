@@ -1,0 +1,274 @@
+﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web assets. */
+
+/*** Home ***/
+.level {
+  height: 75px;
+  width: 75px;
+}
+
+/*** Map ***/
+#game {
+  padding-top: 100px;
+}
+
+#point_icon {
+  height: 75px;
+  width: 75px;
+  margin-left: 10px;
+  background-image: url('../img/point_icon.png');
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+#point_icon p {
+  color: white;
+  text-shadow:
+  -1px -1px 0 black,
+  1px -1px 0 black,
+		-1px 1px 0 black,
+		1px 1px 0 black;
+  font-size: 25px;
+  font-weight: bold;
+  padding-top: 50%;
+}
+
+#gameover {
+  height: 75px;
+  width: 865px;
+  font-size: 25px;
+}
+
+#gameover_msg {
+  padding-top: 15px;
+}
+
+#levelselector {
+  display: none;
+}
+
+#timer_icon {
+  height: 75px;
+  width: 75px;
+  background-image: url('../img/timer_icon.png');
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+#timer_icon p {
+  color: white;
+  text-shadow:
+  -1px -1px 0 black,
+  1px -1px 0 black,
+		-1px 1px 0 black,
+		1px 1px 0 black;
+  font-size: 25px;
+  font-weight: bold;
+  padding-top: 55%;
+}
+
+.row {
+  line-height: 0;
+}
+
+.floor {
+  background-image: linear-gradient(45deg, #828C71 25%, transparent 25%), linear-gradient(-45deg, #828C71 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #828C71 75%), linear-gradient(-45deg, transparent 75%, #828C71 75%);
+  background-size: 75px 75px;
+  background-position: 0 0, 0 37px, 37px -37px, -37px 0px;
+  height: 75px;
+  width: 75px;
+  display: inline-block;
+}
+
+.table {
+  background-color: #DC9B47;
+  height: 75px;
+  width: 75px;
+  margin-bottom: 0;
+  border: 1px solid black;
+  display: inline-block;
+}
+
+.stove {
+  background-color: red;
+  background-image: url('../img/stove.png');
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  height: 75px;
+  width: 75px;
+  margin-bottom: 0;
+  border: 1px solid black;
+  display: inline-block;
+}
+
+.cutting_board {
+  background-color: white;
+  background-image: url('../img/cuttingboard.png');
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  height: 75px;
+  width: 75px;
+  margin-bottom: 0;
+  border: 1px solid black;
+  display: inline-block;
+}
+
+.sink {
+  background-color: #83CAF6;
+  background-image: url('../img/sink.png');
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  height: 75px;
+  width: 75px;
+  margin-bottom: 0;
+  border: 1px solid black;
+  display: inline-block;
+}
+
+.sink_dish {
+  background-color: silver;
+  background-image: url('../img/sinkdish.png');
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  height: 75px;
+  width: 75px;
+  margin-bottom: 0;
+  border: 1px solid black;
+  display: inline-block;
+}
+
+.dirty_dish {
+  background-color: silver;
+  background-image: url('../img/dirtydish.png');
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  height: 75px;
+  width: 75px;
+  margin-bottom: 0;
+  border: 1px solid black;
+  display: inline-block;
+}
+
+.food_out {
+  background-color: #D4D0B0;
+  background-image: url('../img/foodout.png');
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  height: 75px;
+  width: 75px;
+  margin-bottom: 0;
+  border: 1px solid black;
+  display: inline-block;
+}
+
+.trash {
+  background-color: #585A59;
+  background-image: url('../img/trash.png');
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  height: 75px;
+  width: 75px;
+  margin-bottom: 0;
+  border: 1px solid black;
+  display: inline-block;
+}
+
+.onion_box {
+  background-color: #AD7647;
+  background-image: url('../img/onionbox.png');
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  height: 75px;
+  width: 75px;
+  margin-bottom: 0;
+  border: 1px solid black;
+  display: inline-block;
+}
+
+/*** Moving Items ***/
+.fire_exts {
+  background-color: transparent;
+  height: 75px;
+  width: 75px;
+  padding-top: 1px;
+  background-image: url('../img/fire_ext.png');
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute;
+}
+
+.dishes {
+  background-color: transparent;
+  height: 75px;
+  width: 75px;
+  padding-top: 1px;
+  background-image: url('../img/plate.png');
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute;
+}
+
+#player_one {
+  background-color: transparent;
+  height: 75px;
+  width: 75px;
+  background-image: url('../img/down1.png');
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute;
+}
+
+.pots {
+  background-color: transparent;
+  height: 75px;
+  width: 75px;
+  padding-top: 1px;
+  background-image: url('../img/pot.png');
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute;
+}
+
+.item_icon {
+  height: 25px;
+  width: 25px;
+  display: inline-block;
+  background-image: url('../img/empty.png');
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.onions {
+  background-color: transparent;
+  height: 75px;
+  width: 75px;
+  background-image: url('../img/onion.png');
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute;
+}
+
+.process_bar {
+  border: 1px solid white;
+  height: 10px;
+  width: 100%;
+  margin-top: 35%;
+  border-radius: 10px;
+  display: inline-block;
+}

@@ -1,0 +1,28 @@
+﻿@{
+    ViewData["Title"] = "Dojocooked";
+}
+
+<div id="game">
+    <div id="world"></div>
+    <div id="player_one"></div>
+    <div id="pots"></div>
+    <div id="ingredients"></div>
+    <div id="dishes"></div>
+    <div id="fire_exts"></div>
+    <div class="row mt-2">
+        <div id="point_icon" class="row justify-content-center">
+            <p>0</p>
+        </div>
+        <div id="gameover" class="row justify-content-center">
+            <p id="gameover_msg" class="m-0"></p>
+            <div class="w-100"></div>
+            <a asp-action="levelselector" asp-controller="home" id="levelselector"><button class="btn btn-secondary">Level Selector</button></a>
+        </div>
+        <div id="timer_icon" class="row justify-content-center">
+            <p id="timer">00:00</p>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/@ViewBag.Level" asp-append-version="true"></script>
+<script src="~/js/game.js" asp-append-version="true"></script>
