@@ -1,6 +1,10 @@
 ﻿// Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 // for details on configuring this project to bundle and minify static web assets.
 
+/***TO DO
+ * extra points for early finish
+***/
+
 /***Game Variables***/
 var gameTop = 100;
 var gameStart = true;
@@ -11,7 +15,17 @@ var dishes = [];
 var fireExts = [];
 var potTimer = [];
 var foodOrders = [];
+var orderTimer = null;
+var cutTimer = 15;
+var cleanTimer = 15;
+var cookTimer = 12;
+var newOrderTimer = 15;
+var orderExpires = 50;
 var points = 0;
+var sinkExists = false;
+var sink = null;
+var sinkDish = null;
+var dirtyDish = null;
 
 /***Generate World***/
 var worldObject = new Array(world.length)
@@ -33,6 +47,7 @@ var worldDict = {
     10: "onion_box",
     11: "table", //dishes
     12: "floor", //player_one
+    13: "floor" //player_two
 };
 
 function drawWorld() {
@@ -62,6 +77,34 @@ function drawWorld() {
                     }
                     updatePos(pots[potId]);
                     worldObject[row][column] = pots[potId];
+                }
+                //sink
+                else if (world[row][column] == 4) {
+                    sinkExists = true;
+                    sink = {
+                        item: [],
+                        x: column,
+                        y: row
+                    }
+                    worldObject[row][column] = "sink";
+                }
+                //sink dish
+                else if (world[row][column] == 5) {
+                    sinkDish = {
+                        item: [],
+                        x: column,
+                        y: row
+                    }
+                    worldObject[row][column] = "sink_dish";
+                }
+                //dirty dish
+                else if (world[row][column] == 6) {
+                    dirtyDish = {
+                        item: [],
+                        x: column,
+                        y: row
+                    }
+                    worldObject[row][column] = "dirty_dish";
                 }
                 //food out
                 else if (world[row][column] == 7) {
@@ -95,6 +138,7 @@ function drawWorld() {
                         name: newDish,
                         type: "dishes",
                         clean: true,
+                        process: 0,
                         x: column,
                         y: row,
                         item: [],
@@ -121,6 +165,26 @@ function drawWorld() {
                         css: document.getElementById("player_one").style
                     }
                     updatePos(playerOne);
+                    world[row][column] = 0;
+                }
+                //player 2
+                else if (world[row][column] == 13) {
+                    playerTwo = {
+                        name: "player_two",
+                        type: "player",
+                        x: column,
+                        y: row,
+                        item: null,
+                        facing: {
+                            world: world[row + 1][column],
+                            x: column,
+                            y: row + 1
+                        },
+                        direction: "down",
+                        step: 1,
+                        css: document.getElementById("player_two").style
+                    }
+                    updatePos(playerTwo);
                     world[row][column] = 0;
                 }
             }
@@ -156,6 +220,48 @@ function gameTime() {
     document.getElementById("timer").innerHTML = time;
 }
 
+function pointUpdate() {
+    document.getElementById("scoreboard").innerHTML = points;
+}
+
+function makeOrders() {
+    //randomize order
+    var randomNum = Math.floor(Math.random() * orderOptions.length);
+    foodOrders.push(Object.assign({}, orderOptions[randomNum]));
+    var orderInQueue = foodOrders.length - 1;
+    var element = document.getElementById("orders");
+    element.innerHTML += "<div class='order_queue row'></div>";
+    element.getElementsByClassName("order_queue")[orderInQueue].innerHTML = "<div class='order_process col-12'></div>";
+    element.getElementsByClassName("order_queue")[orderInQueue].innerHTML += "<div class='order_img col-12' style=\"background-image: url('../img/" + foodOrders[orderInQueue].type + ".png');\"></div>";
+    //order has 1 ingredient
+    if (foodOrders[orderInQueue].order.length == 1) {
+        for (var i = 0; i < foodOrders[orderInQueue].order.length; i++) {
+            element.getElementsByClassName("order_queue")[orderInQueue].innerHTML += "<div class='order_icon col-12' style=\"background-image: url('../img/" + foodOrders[orderInQueue].order[i] + ".png');\"></div>";
+        }
+    }
+    //order has 3 ingredients
+    else if (foodOrders[orderInQueue].order.length == 2) {
+        for (var i = 0; i < foodOrders[orderInQueue].order.length; i++) {
+            element.getElementsByClassName("order_queue")[orderInQueue].innerHTML += "<div class='order_icon col-6' style=\"background-image: url('../img/" + foodOrders[orderInQueue].order[i] + ".png');\"></div>";
+        }
+    }
+    //order has 2 ingredients
+    else if (foodOrders[orderInQueue].order.length == 3) {
+        for (var i = 0; i < foodOrders[orderInQueue].order.length; i++) {
+            element.getElementsByClassName("order_queue")[orderInQueue].innerHTML += "<div class='order_icon col-4' style=\"background-image: url('../img/" + foodOrders[orderInQueue].order[i] + ".png');\"></div>";
+        }
+    }
+    //order has 4 ingredients
+    else if (foodOrders[orderInQueue].order.length == 4) {
+        for (var i = 0; i < foodOrders[orderInQueue].order.length; i++) {
+            element.getElementsByClassName("order_queue")[orderInQueue].innerHTML += "<div class='order_icon col-3' style=\"background-image: url('../img/" + foodOrders[orderInQueue].order[i] + ".png');\"></div>";
+        }
+    }
+
+    foodOrders[orderInQueue].timer = setTimeout(function () { orderCountdown(foodOrders[orderInQueue]) }, 1000);
+    setTimeout(makeOrders, newOrderTimer * 1000);
+}
+
 function css(name) {
     return document.getElementById(name).style;
 }
@@ -165,9 +271,9 @@ function updatePos(object) {
     css(object.name).left = object.x * 75 + "px";
 }
 
-function heldItemPos(object) {
-    css(object.name).top = (playerOne.y * 75 + gameTop - 42) + "px";
-    css(object.name).left = (playerOne.x * 75 + 12) + "px";
+function heldItemPos(player) {
+    css(player.item.name).top = (player.y * 75 + gameTop - 42) + "px";
+    css(player.item.name).left = (player.x * 75 + 12) + "px";
 }
 
 function heldItemSize(object) {
@@ -194,17 +300,52 @@ function normItemIconSize(object) {
     }
 }
 
+function removeIcons(object) {
+    document.getElementById(object.name).innerHTML = null;
+}
+
 function executeAction(object) {
     object.process++;
 }
 
-function updateProcessBar(object) {
+function orderCountdown(object) {
+    if (object.process < orderExpires) {
+        object.process++;
+        setTimeout(function () { orderCountdown(object) }, 1000);;
+    }
+}
+
+function updateOrderProcessBar() {
+    if (foodOrders.length != 0) {
+        for (var i = 0; i < foodOrders.length; i++) {
+            var processComplete = (foodOrders[i].process) * (100 / orderExpires);
+            var processIncomplete = 100 - processComplete;
+            if (processComplete == 100) {
+                clearTimeout(foodOrders[i].timer);
+                foodOrders.splice(i, 1);
+                document.getElementById("orders").removeChild(document.getElementsByClassName("order_queue")[i]);
+            }
+            else if (processComplete <= 50) {
+                document.getElementsByClassName("order_process")[i].style.backgroundImage = "linear-gradient(to right, green " + processIncomplete + "%, transparent " + processComplete + "%)";
+            }
+            else if (processComplete > 50) {
+                document.getElementsByClassName("order_process")[i].style.backgroundImage = "linear-gradient(to left, transparent " + processComplete + "%, green " + processIncomplete + "%)";
+            }
+        }
+    }
+    setTimeout(updateOrderProcessBar, 100);
+}
+
+function updateProcessBar(player, object) {
     //max process bar counter
     if (object.type == "ingredients") {
-        var processMax = 20;
+        var processMax = cutTimer;
     }
     else if (object.type == "pots") {
-        var processMax = 12;
+        var processMax = cookTimer;
+    }
+    else if (object.type == "dishes") {
+        var processMax = cleanTimer;
     }
     //create process bar
     if (document.getElementById(object.name).getElementsByClassName("process_bar").length == 0) {
@@ -226,7 +367,7 @@ function updateProcessBar(object) {
             document.getElementById(object.name).getElementsByClassName("process_bar")[0].style.backgroundImage = "linear-gradient(to right, green " + processComplete + "%, transparent " + processIncomplete + "%)";
         }
     }
-    if (playerOne.item != null && playerOne.item.name == object.name) {
+    if (player.item != null && player.item.name == object.name) {
         null;
     }
     else if (object.type == "pots" && object.item.length != 0 && object.process < processMax && world[object.y][object.x] == "2") {
@@ -241,9 +382,16 @@ function updateProcessBar(object) {
             if (potTimer[object.id] != null) {
                 clearTimeout(potTimer[object.id]);
             }
-            potTimer[object.id] = setTimeout(function () { updateProcessBar(object) }, 1000);
+            potTimer[object.id] = setTimeout(function () { updateProcessBar(player, object) }, 1000);
         }
     }
+}
+
+function foodToPot(pot, ingredient) {
+    var element = document.getElementById(ingredient.name);
+    element.parentNode.removeChild(element);
+    document.getElementById(pot.name).getElementsByClassName("item_icon")[pot.item.length].style.backgroundImage = "url('../img/" + ingredient.food + ".png')";
+    pot.item.push(ingredient);
 }
 
 function cuttingComplete(object) {
@@ -251,7 +399,40 @@ function cuttingComplete(object) {
     document.getElementById(object.name).innerHTML = null;
 }
 
-function emptyItem(object) {
+function cleaningComplete(object) {
+    object.clean = true;
+    object.process = 0;
+    css(object.name).backgroundImage = "url('../img/plate.png')";
+    object.x = sinkDish.x;
+    object.y = sinkDish.y;
+    document.getElementById(object.name).innerHTML = null;
+    updatePos(object);
+    document.getElementById(object.name).innerHTML = null;
+    sinkDish.item.push(sink.item.pop());
+}
+
+function returnPlate(object) {
+    object.x = dirtyDish.x;
+    object.y = dirtyDish.y;
+    updatePos(object);
+    normItemSize(object);
+    css(object.name).display = "block";
+    dirtyDish.item.push(object);
+}
+
+function dishComplete(object, sinkExists) {
+    if (sinkExists) {
+        object.clean = false;
+        css(object.name).backgroundImage = "url('../img/plate_dirty.png')";
+    }
+    else {
+        object.clean = true;
+    }
+    css(object.name).display = "none";
+    setTimeout(function () { returnPlate(object) }, 10000);
+}
+
+function emptyItem(player, object) {
     object.item = [];
     for (var i = 0; i < 3; i++) {
         document.getElementById(object.name).getElementsByClassName("item_icon")[i].style.backgroundImage = "url('../img/empty.png')";
@@ -260,237 +441,14 @@ function emptyItem(object) {
         object.process = 0;
         var element = document.getElementById(object.name);
         element.removeChild(element.getElementsByClassName("process_bar")[0]);
-        if (worldObject[playerOne.facing.y][playerOne.facing.x].type == "dishes") {
-            var element = document.getElementById(worldObject[playerOne.facing.y][playerOne.facing.x].name);
+        if (worldObject[player.facing.y][player.facing.x].type == "dishes") {
+            var element = document.getElementById(worldObject[player.facing.y][player.facing.x].name);
             element.removeChild(element.getElementsByClassName("process_bar")[0]);
         }
-        else if (playerOne.item.type == "dishes") {
-            var element = document.getElementById(playerOne.item.name);
+        else if (player.item.type == "dishes") {
+            var element = document.getElementById(player.item.name);
             element.removeChild(element.getElementsByClassName("process_bar")[0]);
         }
-    }
-}
-
-/***Player Movement***/
-//player 1
-document.onkeydown = function (e) {
-    if (!gameOver) {
-        if (playerOne.step == 1) {
-            playerOne.step = 2;
-        }
-        else {
-            playerOne.step = 1;
-        }
-        //left movement
-        if (e.keyCode == 37) {
-            playerOne.direction = "left";
-            playerOne.css.backgroundImage = "url('../img/" + playerOne.direction + playerOne.step + ".png')";
-            if (world[playerOne.y][playerOne.x - 1] == 0) {
-                playerOne.x -= 1;
-            }
-            playerOne.facing = {
-                world: world[playerOne.y][playerOne.x - 1],
-                x: playerOne.x - 1,
-                y: playerOne.y
-            };
-        }
-        //up movement
-        else if (e.keyCode == 38) {
-            playerOne.direction = "top";
-            playerOne.css.backgroundImage = "url('../img/" + playerOne.direction + playerOne.step + ".png')";
-            if (world[playerOne.y - 1][playerOne.x] == 0) {
-                playerOne.y--;
-            }
-            playerOne.facing = {
-                world: world[playerOne.y - 1][playerOne.x],
-                x: playerOne.x,
-                y: playerOne.y - 1
-            };
-        }
-        //right movement
-        else if (e.keyCode == 39) {
-            playerOne.direction = "right";
-            playerOne.css.backgroundImage = "url('../img/" + playerOne.direction + playerOne.step + ".png')";
-            if (world[playerOne.y][playerOne.x + 1] == 0) {
-                playerOne.x++;
-            }
-            playerOne.facing = {
-                world: world[playerOne.y][playerOne.x + 1],
-                x: playerOne.x + 1,
-                y: playerOne.y
-            };
-        }
-        //down movement
-        else if (e.keyCode == 40) {
-            playerOne.direction = "down";
-            playerOne.css.backgroundImage = "url('../img/" + playerOne.direction + playerOne.step + ".png')";
-            if (world[playerOne.y + 1][playerOne.x] == 0) {
-                playerOne.y++;
-            }
-            playerOne.facing = {
-                world: world[playerOne.y + 1][playerOne.x],
-                x: playerOne.x,
-                y: playerOne.y + 1
-            };
-        }
-        //action key(x=88)
-        else if (e.keyCode == 88) {
-            if (worldObject[playerOne.facing.y][playerOne.facing.x] != null) {
-                //cutting ingredients
-                if (playerOne.facing.world == 3 && worldObject[playerOne.facing.y][playerOne.facing.x].type == "ingredients") {
-                    if (worldObject[playerOne.facing.y][playerOne.facing.x].process < 20) {
-                        updateProcessBar(worldObject[playerOne.facing.y][playerOne.facing.x]);
-                        executeAction(worldObject[playerOne.facing.y][playerOne.facing.x]);
-                    }
-                    if (worldObject[playerOne.facing.y][playerOne.facing.x].process == 20) {
-                        cuttingComplete(worldObject[playerOne.facing.y][playerOne.facing.x]);
-                    }
-                }
-            }
-        }
-        //pickup key(z=90)
-        else if (e.keyCode == 90) {
-            //player 1 is not holding any item
-            if (playerOne.item == null && playerOne.facing.world != 0) {
-                //object to pick up
-                if (worldObject[playerOne.facing.y][playerOne.facing.x] != null) {
-                    playerOne.item = worldObject[playerOne.facing.y][playerOne.facing.x];
-                    worldObject[playerOne.facing.y][playerOne.facing.x] = null;
-                }
-                //no object to pick up
-                else {
-                    //onion box
-                    if (playerOne.facing.world == 10) {
-                        var onionId = ingredients.length;
-                        var newOnion = "onion" + onionId;
-                        document.getElementById("ingredients").innerHTML += "<div id='" + newOnion + "'></div>";
-                        ingredients.push({
-                            name: newOnion,
-                            type: "ingredients",
-                            food: "onion",
-                            x: null,
-                            y: null,
-                            process: 0
-                        });
-                        document.getElementById(newOnion).classList.add("onions");
-                        playerOne.item = ingredients[onionId];
-                    }
-                }
-            }
-            //player 1 is holding an item
-            else if (playerOne.item != null && playerOne.facing.world != 0) {
-                //general
-                if (worldObject[playerOne.facing.y][playerOne.facing.x] == null) {
-                    var canPlace = true;
-                    if (playerOne.item.type == "ingredients") {
-                        if (playerOne.facing.world == 2 || playerOne.facing.world == 4 || playerOne.facing.world == 5 || playerOne.facing.world == 6) {
-                            canPlace = false;
-                        }
-                    }
-                    else if (playerOne.item.type == "pots") {
-                        if (playerOne.facing.world == 3 || playerOne.facing.world == 4 || playerOne.facing.world == 5 || playerOne.facing.world == 6) {
-                            canPlace = false;
-                        }
-                    }
-                    else if (playerOne.item.type == "dishes") {
-                        if (playerOne.facing.world == 2 || playerOne.facing.world == 3 || playerOne.facing.world == 4 || playerOne.facing.world == 5 || playerOne.facing.world == 6) {
-                            canPlace = false;
-                        }
-                    }
-                    else if (playerOne.item.type == "fire_exts") {
-                        if (playerOne.facing.world == 2 || playerOne.facing.world == 3 || playerOne.facing.world == 4 || playerOne.facing.world == 5 || playerOne.facing.world == 6) {
-                            canPlace = false;
-                        }
-                    }
-                    if (canPlace) {
-                        playerOne.item.x = playerOne.facing.x;
-                        playerOne.item.y = playerOne.facing.y;
-                        normItemSize(playerOne.item);
-                        worldObject[playerOne.facing.y][playerOne.facing.x] = playerOne.item;
-                        playerOne.item = null;
-                        if (worldObject[playerOne.facing.y][playerOne.facing.x].type == "pots") {
-                            normItemIconSize(worldObject[playerOne.facing.y][playerOne.facing.x]);
-                            updateProcessBar(worldObject[playerOne.facing.y][playerOne.facing.x]);
-                        }
-                        else if (worldObject[playerOne.facing.y][playerOne.facing.x].type == "dishes" && worldObject[playerOne.facing.y][playerOne.facing.x].item.length > 0) {
-                            normItemIconSize(worldObject[playerOne.facing.y][playerOne.facing.x]);
-                        }
-                        css(worldObject[playerOne.facing.y][playerOne.facing.x].name).display = "block";
-                        updatePos(worldObject[playerOne.facing.y][playerOne.facing.x]);
-                    }
-                }
-                //food held
-                else if (playerOne.item.type == "ingredients") {
-                    //pot in front
-                    if (worldObject[playerOne.facing.y][playerOne.facing.x].type == "pots" && playerOne.item.process == 0) {
-                        //pot is not full
-                        if (worldObject[playerOne.facing.y][playerOne.facing.x].item.length < 3) {
-                            var element = document.getElementById(playerOne.item.name); element.parentNode.removeChild(element);
-                            document.getElementById(worldObject[playerOne.facing.y][playerOne.facing.x].name).getElementsByClassName("item_icon")[worldObject[playerOne.facing.y][playerOne.facing.x].item.length].style.backgroundImage = "url('../img/" + playerOne.item.food + ".png')";
-                            worldObject[playerOne.facing.y][playerOne.facing.x].item.push(playerOne.item);
-                            playerOne.item = null;
-                            updateProcessBar(worldObject[playerOne.facing.y][playerOne.facing.x]);
-                        }
-                    }
-                    //trash in front
-                    if (worldObject[playerOne.facing.y][playerOne.facing.x] == "trash") {
-                        var element = document.getElementById(playerOne.item.name); element.parentNode.removeChild(element);
-                        playerOne.item = null;
-                    }
-                }
-                //pot held
-                else if (playerOne.item.type == "pots") {
-                    //trash in front
-                    if (worldObject[playerOne.facing.y][playerOne.facing.x] == "trash") {
-                        emptyItem(playerOne.item);
-                    }
-                    //dish in front
-                    else if (worldObject[playerOne.facing.y][playerOne.facing.x].type == "dishes") {
-                        if (worldObject[playerOne.facing.y][playerOne.facing.x].clean && worldObject[playerOne.facing.y][playerOne.facing.x].item.length == 0 && playerOne.item.process == 12) {
-                            worldObject[playerOne.facing.y][playerOne.facing.x].item = playerOne.item.item;
-                            document.getElementById(worldObject[playerOne.facing.y][playerOne.facing.x].name).innerHTML = document.getElementById(playerOne.item.name).innerHTML;
-                            normItemIconSize(worldObject[playerOne.facing.y][playerOne.facing.x]);
-                            emptyItem(playerOne.item);
-                        }
-                    }
-                }
-                //dish held
-                else if (playerOne.item.type == "dishes") {
-                    //trash in front
-                    if (worldObject[playerOne.facing.y][playerOne.facing.x] == "trash") {
-                        emptyItem(playerOne.item);
-                        document.getElementById(playerOne.item.name).innerHTML = null;
-                    }
-                    //pot in front
-                    else if (worldObject[playerOne.facing.y][playerOne.facing.x].type == "pots") {
-                        if (playerOne.item.clean && playerOne.item.item.length == 0 && worldObject[playerOne.facing.y][playerOne.facing.x].process == 12) {
-                            playerOne.item.item = worldObject[playerOne.facing.y][playerOne.facing.x].item;
-                            document.getElementById(playerOne.item.name).innerHTML = document.getElementById(worldObject[playerOne.facing.y][playerOne.facing.x].name).innerHTML;
-                            emptyItem(worldObject[playerOne.facing.y][playerOne.facing.x]);
-                        }
-                    }
-                    else if (worldObject[playerOne.facing.y][playerOne.facing.x] == "food_out") {
-
-                    }
-                }
-            }
-        }
-
-        //update held item
-        if (playerOne.item != null) {
-            heldItemSize(playerOne.item);
-            heldItemPos(playerOne.item);
-            //pot held
-            if (playerOne.item.type == "pots") {
-                heldItemIconSize(playerOne.item);
-            }
-            //dish held
-            else if (playerOne.item.type == "dishes" && playerOne.item.item.length > 0) {
-                heldItemIconSize(playerOne.item);
-            }
-        }
-        //update player position
-        updatePos(playerOne);
     }
 }
 
@@ -498,3 +456,5 @@ document.onkeydown = function (e) {
 drawWorld();
 gameTime();
 setTimeout(startGame, 1000);
+makeOrders();
+updateOrderProcessBar();

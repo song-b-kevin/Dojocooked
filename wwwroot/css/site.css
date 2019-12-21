@@ -8,8 +8,40 @@ for details on configuring this project to bundle and minify static web assets. 
 }
 
 /*** Map ***/
-#game {
-  padding-top: 100px;
+#orders {
+  height: 100px;
+}
+
+.order_queue {
+  height: 100px;
+  width: 150px;
+  margin: 0;
+  border-radius: 10px;
+  background-image: linear-gradient(to bottom, transparent 75%, skyblue 25%);
+  border: 1px solid black;
+}
+
+.order_process {
+  height: 10%;
+  border-top-left-radius: 9px;
+  border-top-right-radius: 9px;
+}
+
+.order_img {
+  height: 55%;
+  margin: 3% 0;
+  display: inline-block;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+
+.order_icon {
+  height: 25%;
+  display: inline-block;
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
 }
 
 #point_icon {
@@ -29,7 +61,7 @@ for details on configuring this project to bundle and minify static web assets. 
   1px -1px 0 black,
 		-1px 1px 0 black,
 		1px 1px 0 black;
-  font-size: 25px;
+  font-size: 30px;
   font-weight: bold;
   padding-top: 50%;
 }
@@ -64,7 +96,7 @@ for details on configuring this project to bundle and minify static web assets. 
   1px -1px 0 black,
 		-1px 1px 0 black,
 		1px 1px 0 black;
-  font-size: 25px;
+  font-size: 30px;
   font-weight: bold;
   padding-top: 55%;
 }
@@ -225,6 +257,17 @@ for details on configuring this project to bundle and minify static web assets. 
   height: 75px;
   width: 75px;
   background-image: url('../img/down1.png');
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute;
+}
+
+#player_two {
+  background-color: transparent;
+  height: 75px;
+  width: 75px;
+  background-image: url('../img/down1_2.png');
   background-position: center;
   background-size: contain;
   background-repeat: no-repeat;

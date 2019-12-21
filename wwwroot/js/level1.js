@@ -2,13 +2,14 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 /***Game Variables***/
-var gameTimeLimit = 90;
+var gameTimeLimit = 150;
+var orderOptions = [onionSoup]
 
 /***Generate World***/
 var world = [
     [1, 1, 1, 10, 1, 1, 1, 1, 2, 1, 1, 1, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 9],
-    [1, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0, 0, 1],
+    [1, 0, 0, 12, 0, 0, 0, 0, 13, 0, 0, 0, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 4],
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 5],
     [6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -31,4 +32,5 @@ var world = [
     10: "onion_box",
     11: "table", //dishes
     12: "floor", //player_one
+    13: "floor" //player_two
 ***/
