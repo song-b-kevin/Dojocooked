@@ -3,9 +3,17 @@
 
 /***Recipes***/
 //Onion soup
+
 var onionSoup = {
     type: "pot",
     order: ["onion", "onion", "onion"],
+    timer: null,
+    process: 0
+}
+
+var tomatoSoup = {
+    type: "pot",
+    order: ["tomato", "tomato", "tomato"],
     timer: null,
     process: 0
 }

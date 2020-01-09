@@ -20,7 +20,7 @@ var cutTimer = 15;
 var cleanTimer = 15;
 var cookTimer = 12;
 var newOrderTimer = 15;
-var orderExpires = 50;
+var orderExpires = 120;
 var points = 0;
 var sinkExists = false;
 var sink = null;
@@ -44,10 +44,11 @@ var worldDict = {
     7: "food_out",
     8: "trash",
     9: "table", //fire_ext
-    10: "onion_box",
-    11: "table", //dishes
-    12: "floor", //player_one
-    13: "floor" //player_two
+    10: "table", //dishes
+    11: "floor", //player_one
+    12: "floor", //player_two
+    13: "onion_box",
+    14: "tomato_box"
 };
 
 function drawWorld() {
@@ -130,7 +131,7 @@ function drawWorld() {
                     world[row][column] = 1;
                 }
                 //dishes
-                else if (world[row][column] == 11) {
+                else if (world[row][column] == 10) {
                     var dishId = dishes.length;
                     var newDish = "dish" + dishId;
                     document.getElementById("dishes").innerHTML += "<div id='" + newDish + "' class='dishes'></div>";
@@ -148,7 +149,7 @@ function drawWorld() {
                     world[row][column] = 1;
                 }
                 //player 1
-                else if (world[row][column] == 12) {
+                else if (world[row][column] == 11) {
                     playerOne = {
                         name: "player_one",
                         type: "player",
@@ -166,9 +167,10 @@ function drawWorld() {
                     }
                     updatePos(playerOne);
                     world[row][column] = 0;
+                    worldObject[row][column] = "player";
                 }
                 //player 2
-                else if (world[row][column] == 13) {
+                else if (world[row][column] == 12) {
                     playerTwo = {
                         name: "player_two",
                         type: "player",
@@ -186,6 +188,7 @@ function drawWorld() {
                     }
                     updatePos(playerTwo);
                     world[row][column] = 0;
+                    worldObject[row][column] = "player;"
                 }
             }
         }
@@ -225,41 +228,45 @@ function pointUpdate() {
 }
 
 function makeOrders() {
-    //randomize order
-    var randomNum = Math.floor(Math.random() * orderOptions.length);
-    foodOrders.push(Object.assign({}, orderOptions[randomNum]));
-    var orderInQueue = foodOrders.length - 1;
-    var element = document.getElementById("orders");
-    element.innerHTML += "<div class='order_queue row'></div>";
-    element.getElementsByClassName("order_queue")[orderInQueue].innerHTML = "<div class='order_process col-12'></div>";
-    element.getElementsByClassName("order_queue")[orderInQueue].innerHTML += "<div class='order_img col-12' style=\"background-image: url('../img/" + foodOrders[orderInQueue].type + ".png');\"></div>";
-    //order has 1 ingredient
-    if (foodOrders[orderInQueue].order.length == 1) {
-        for (var i = 0; i < foodOrders[orderInQueue].order.length; i++) {
-            element.getElementsByClassName("order_queue")[orderInQueue].innerHTML += "<div class='order_icon col-12' style=\"background-image: url('../img/" + foodOrders[orderInQueue].order[i] + ".png');\"></div>";
+    if (foodOrders.length < 6) {
+        //randomize order
+        var randomNum = Math.floor(Math.random() * orderOptions.length);
+        foodOrders.push(Object.assign({}, orderOptions[randomNum]));
+        var orderInQueue = foodOrders.length - 1;
+        var element = document.getElementById("orders");
+        element.innerHTML += "<div class='order_queue row'></div>";
+        element.getElementsByClassName("order_queue")[orderInQueue].innerHTML = "<div class='order_process col-12'></div>";
+        element.getElementsByClassName("order_queue")[orderInQueue].innerHTML += "<div class='order_img col-12' style=\"background-image: url('../img/" + foodOrders[orderInQueue].type + ".png');\"></div>";
+        //order has 1 ingredient
+        if (foodOrders[orderInQueue].order.length == 1) {
+            for (var i = 0; i < foodOrders[orderInQueue].order.length; i++) {
+                element.getElementsByClassName("order_queue")[orderInQueue].innerHTML += "<div class='order_icon col-12' style=\"background-image: url('../img/" + foodOrders[orderInQueue].order[i] + ".png');\"></div>";
+            }
         }
-    }
-    //order has 3 ingredients
-    else if (foodOrders[orderInQueue].order.length == 2) {
-        for (var i = 0; i < foodOrders[orderInQueue].order.length; i++) {
-            element.getElementsByClassName("order_queue")[orderInQueue].innerHTML += "<div class='order_icon col-6' style=\"background-image: url('../img/" + foodOrders[orderInQueue].order[i] + ".png');\"></div>";
+        //order has 3 ingredients
+        else if (foodOrders[orderInQueue].order.length == 2) {
+            for (var i = 0; i < foodOrders[orderInQueue].order.length; i++) {
+                element.getElementsByClassName("order_queue")[orderInQueue].innerHTML += "<div class='order_icon col-6' style=\"background-image: url('../img/" + foodOrders[orderInQueue].order[i] + ".png');\"></div>";
+            }
         }
-    }
-    //order has 2 ingredients
-    else if (foodOrders[orderInQueue].order.length == 3) {
-        for (var i = 0; i < foodOrders[orderInQueue].order.length; i++) {
-            element.getElementsByClassName("order_queue")[orderInQueue].innerHTML += "<div class='order_icon col-4' style=\"background-image: url('../img/" + foodOrders[orderInQueue].order[i] + ".png');\"></div>";
+        //order has 2 ingredients
+        else if (foodOrders[orderInQueue].order.length == 3) {
+            for (var i = 0; i < foodOrders[orderInQueue].order.length; i++) {
+                element.getElementsByClassName("order_queue")[orderInQueue].innerHTML += "<div class='order_icon col-4' style=\"background-image: url('../img/" + foodOrders[orderInQueue].order[i] + ".png');\"></div>";
+            }
         }
-    }
-    //order has 4 ingredients
-    else if (foodOrders[orderInQueue].order.length == 4) {
-        for (var i = 0; i < foodOrders[orderInQueue].order.length; i++) {
-            element.getElementsByClassName("order_queue")[orderInQueue].innerHTML += "<div class='order_icon col-3' style=\"background-image: url('../img/" + foodOrders[orderInQueue].order[i] + ".png');\"></div>";
+        //order has 4 ingredients
+        else if (foodOrders[orderInQueue].order.length == 4) {
+            for (var i = 0; i < foodOrders[orderInQueue].order.length; i++) {
+                element.getElementsByClassName("order_queue")[orderInQueue].innerHTML += "<div class='order_icon col-3' style=\"background-image: url('../img/" + foodOrders[orderInQueue].order[i] + ".png');\"></div>";
+            }
         }
+        foodOrders[orderInQueue].timer = setTimeout(function () { orderCountdown(foodOrders[foodOrders.length-1]) }, 1000);
     }
 
-    foodOrders[orderInQueue].timer = setTimeout(function () { orderCountdown(foodOrders[orderInQueue]) }, 1000);
-    setTimeout(makeOrders, newOrderTimer * 1000);
+    if (!gameOver) {
+        setTimeout(makeOrders, newOrderTimer * 1000);
+    }
 }
 
 function css(name) {
@@ -311,7 +318,9 @@ function executeAction(object) {
 function orderCountdown(object) {
     if (object.process < orderExpires) {
         object.process++;
-        setTimeout(function () { orderCountdown(object) }, 1000);;
+        if (!gameOver) {
+            setTimeout(function () { orderCountdown(object) }, 1000);
+        }
     }
 }
 
@@ -324,6 +333,11 @@ function updateOrderProcessBar() {
                 clearTimeout(foodOrders[i].timer);
                 foodOrders.splice(i, 1);
                 document.getElementById("orders").removeChild(document.getElementsByClassName("order_queue")[i]);
+                points -= 10;
+                if (points < 0) {
+                    points = 0;
+                }
+                pointUpdate();
             }
             else if (processComplete <= 50) {
                 document.getElementsByClassName("order_process")[i].style.backgroundImage = "linear-gradient(to right, green " + processIncomplete + "%, transparent " + processComplete + "%)";
@@ -333,7 +347,10 @@ function updateOrderProcessBar() {
             }
         }
     }
-    setTimeout(updateOrderProcessBar, 100);
+
+    if (!gameOver) {
+        setTimeout(updateOrderProcessBar, 100);
+    }
 }
 
 function updateProcessBar(player, object) {

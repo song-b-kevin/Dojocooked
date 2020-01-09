@@ -227,6 +227,19 @@ for details on configuring this project to bundle and minify static web assets. 
   display: inline-block;
 }
 
+.tomato_box {
+  background-color: #AD7647;
+  background-image: url('../img/tomatobox.png');
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  height: 75px;
+  width: 75px;
+  margin-bottom: 0;
+  border: 1px solid black;
+  display: inline-block;
+}
+
 /*** Moving Items ***/
 .fire_exts {
   background-color: transparent;
@@ -256,7 +269,7 @@ for details on configuring this project to bundle and minify static web assets. 
   background-color: transparent;
   height: 75px;
   width: 75px;
-  background-image: url('../img/down1.png');
+  background-image: url('../img/down1_1.png');
   background-position: center;
   background-size: contain;
   background-repeat: no-repeat;
@@ -267,7 +280,7 @@ for details on configuring this project to bundle and minify static web assets. 
   background-color: transparent;
   height: 75px;
   width: 75px;
-  background-image: url('../img/down1_2.png');
+  background-image: url('../img/down2_1.png');
   background-position: center;
   background-size: contain;
   background-repeat: no-repeat;
@@ -301,6 +314,17 @@ for details on configuring this project to bundle and minify static web assets. 
   height: 75px;
   width: 75px;
   background-image: url('../img/onion.png');
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute;
+}
+
+.tomatoes {
+  background-color: transparent;
+  height: 75px;
+  width: 75px;
+  background-image: url('../img/tomato.png');
   background-position: center;
   background-size: contain;
   background-repeat: no-repeat;

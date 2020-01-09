@@ -3,15 +3,16 @@
 
 /***Game Variables***/
 var gameTimeLimit = 240;
+var orderOptions = [onionSoup, tomatoSoup]
 
 /***Generate World***/
 var world = [
     [1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 9, 8, 1],
-    [1, 0, 0, 0, 0, 1, 0, 0, 0, 13, 0, 0, 7],
-    [1, 0, 0, 0, 0, 11, 0, 11, 0, 0, 0, 0, 7],
+    [1, 0, 0, 0, 0, 1, 0, 0, 0, 12, 0, 0, 7],
+    [1, 0, 0, 0, 0, 10, 0, 10, 0, 0, 0, 0, 7],
     [1, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 6],
-    [1, 0, 0, 12, 0, 0, 0, 1, 0, 0, 0, 0, 1],
-    [1, 1, 3, 1, 3, 1, 1, 1, 10, 1, 10, 1, 1]
+    [1, 0, 0, 11, 0, 0, 0, 1, 0, 0, 0, 0, 1],
+    [1, 1, 3, 1, 3, 1, 1, 1, 14, 1, 13, 1, 1]
 ];
 
 /***
@@ -25,8 +26,9 @@ var world = [
     7: "food_out",
     8: "trash",
     9: "table", //fire_ext
-    10: "onion_box",
-    11: "table", //dishes
-    12: "floor", //player_one
-    13: "floor" //player_two
+    10: "table", //dishes
+    11: "floor", //player_one
+    12: "floor", //player_two
+    13: "onion_box",
+    14: "tomato_box"
 ***/
