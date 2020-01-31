@@ -19,7 +19,7 @@ var world = [
 ];
 
 /***
-     0: "floor",
+    0: "floor",
     1: "table",
     2: "stove",
     3: "cutting_board",

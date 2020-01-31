@@ -11,7 +11,9 @@ var action = [190, 86];
 var pickup = [188, 67];
 var map = {};
 
-document.onkeydown = function (e) {
+document.onkeydown = document.onkeyup = function (e) {
+    e = e || event;
+    map[e.keyCode] = e.type == "keydown";
     if (!gameOver) {
         for (var pc = 0; pc < 2; pc++) {
             if (player[pc].step == 1) {
@@ -21,13 +23,14 @@ document.onkeydown = function (e) {
                 player[pc].step = 1;
             }
             //left movement
-            if (e.keyCode == left[pc]) {
+            if (map[left[pc]] && player[pc].action == null) {
                 player[pc].direction = "left";
-                player[pc].css.backgroundImage = "url('../img/" + player[pc].direction + (pc+1) + "_" + player[pc].step + ".png')";
+                player[pc].css.backgroundImage = "url('../img/" + player[pc].direction + (pc + 1) + "_" + player[pc].step + ".png')";
                 if (world[player[pc].y][player[pc].x - 1] == 0 && worldObject[player[pc].y][player[pc].x - 1] == null) {
                     worldObject[player[pc].y][player[pc].x] = null;
                     player[pc].x -= 1;
                     worldObject[player[pc].y][player[pc].x] = "player";
+                    actionUsed(player[pc]);
                 }
                 player[pc].facing = {
                     world: world[player[pc].y][player[pc].x - 1],
@@ -36,13 +39,14 @@ document.onkeydown = function (e) {
                 };
             }
             //up movement
-            else if (e.keyCode == up[pc]) {
+            else if (map[up[pc]] && player[pc].action == null) {
                 player[pc].direction = "top";
-                player[pc].css.backgroundImage = "url('../img/" + player[pc].direction + (pc+1) + "_" + player[pc].step + ".png')";
+                player[pc].css.backgroundImage = "url('../img/" + player[pc].direction + (pc + 1) + "_" + player[pc].step + ".png')";
                 if (world[player[pc].y - 1][player[pc].x] == 0 && worldObject[player[pc].y - 1][player[pc].x] == null) {
                     worldObject[player[pc].y][player[pc].x] = null;
                     player[pc].y--;
                     worldObject[player[pc].y][player[pc].x] = "player";
+                    actionUsed(player[pc]);
                 }
                 player[pc].facing = {
                     world: world[player[pc].y - 1][player[pc].x],
@@ -51,13 +55,14 @@ document.onkeydown = function (e) {
                 };
             }
             //right movement
-            else if (e.keyCode == right[pc]) {
+            else if (map[right[pc]] && player[pc].action == null) {
                 player[pc].direction = "right";
-                player[pc].css.backgroundImage = "url('../img/" + player[pc].direction + (pc+1) + "_" + player[pc].step + ".png')";
+                player[pc].css.backgroundImage = "url('../img/" + player[pc].direction + (pc + 1) + "_" + player[pc].step + ".png')";
                 if (world[player[pc].y][player[pc].x + 1] == 0 && worldObject[player[pc].y][player[pc].x + 1] == null) {
                     worldObject[player[pc].y][player[pc].x] = null;
                     player[pc].x++;
                     worldObject[player[pc].y][player[pc].x] = "player";
+                    actionUsed(player[pc]);
                 }
                 player[pc].facing = {
                     world: world[player[pc].y][player[pc].x + 1],
@@ -66,13 +71,14 @@ document.onkeydown = function (e) {
                 };
             }
             //down movement
-            else if (e.keyCode == down[pc]) {
+            else if (map[down[pc]] && player[pc].action == null) {
                 player[pc].direction = "down";
-                player[pc].css.backgroundImage = "url('../img/" + player[pc].direction + (pc+1) + "_" + player[pc].step + ".png')";
+                player[pc].css.backgroundImage = "url('../img/" + player[pc].direction + (pc + 1) + "_" + player[pc].step + ".png')";
                 if (world[player[pc].y + 1][player[pc].x] == 0 && worldObject[player[pc].y + 1][player[pc].x] == null) {
                     worldObject[player[pc].y][player[pc].x] = null;
                     player[pc].y++;
                     worldObject[player[pc].y][player[pc].x] = "player";
+                    actionUsed(player[pc]);
                 }
                 player[pc].facing = {
                     world: world[player[pc].y + 1][player[pc].x],
@@ -81,32 +87,36 @@ document.onkeydown = function (e) {
                 };
             }
             //action key
-            else if (e.keyCode == action[pc]) {
-                if (worldObject[player[pc].facing.y][player[pc].facing.x] != null) {
+            else if (map[action[pc]]) {
+                if (worldObject[player[pc].facing.y][player[pc].facing.x] != null && player[pc].action == null) {
                     //cutting ingredients
                     if (player[pc].facing.world == 3 && worldObject[player[pc].facing.y][player[pc].facing.x].type == "ingredients") {
                         if (worldObject[player[pc].facing.y][player[pc].facing.x].process < cutTimer) {
                             updateProcessBar(player[pc], worldObject[player[pc].facing.y][player[pc].facing.x]);
                             executeAction(worldObject[player[pc].facing.y][player[pc].facing.x]);
+                            actionUsed(player[pc]);
                         }
                         if (worldObject[player[pc].facing.y][player[pc].facing.x].process == cutTimer) {
                             cuttingComplete(worldObject[player[pc].facing.y][player[pc].facing.x]);
+                            actionUsed(player[pc]);
                         }
                     }
                     //cleaning dishes
-                    else if (player[pc].facing.world == 4 && sink.item.length != 0) {
+                    else if (player[pc].facing.world == 4 && sink.item.length != 0 && player[pc].action == null) {
                         if (sink.item[sink.item.length - 1].process < cleanTimer) {
                             updateProcessBar(player[pc], sink.item[sink.item.length - 1]);
                             executeAction(sink.item[sink.item.length - 1]);
+                            actionUsed(player[pc]);
                         }
                         if (sink.item[sink.item.length - 1].process == cleanTimer) {
                             cleaningComplete(sink.item[sink.item.length - 1]);
+                            actionUsed(player[pc]);
                         }
                     }
                 }
             }
             //pickup key
-            else if (e.keyCode == pickup[pc]) {
+            else if (map[pickup[pc]]) {
                 //player is not holding any item
                 if (player[pc].item == null && player[pc].facing.world != 0) {
                     //object to pick up
@@ -156,6 +166,22 @@ document.onkeydown = function (e) {
                             document.getElementById(newTomato).classList.add("tomatoes");
                             player[pc].item = ingredients[tomatoId];
                         }
+                        //mushroom box
+                        else if (player[pc].facing.world == 15) {
+                            var mushroomId = ingredients.length;
+                            var newMushroom = "mushroom" + mushroomId;
+                            document.getElementById("ingredients").innerHTML += "<div id='" + newMushroom + "'></div>";
+                            ingredients.push({
+                                name: newMushroom,
+                                type: "ingredients",
+                                food: "mushroom",
+                                x: null,
+                                y: null,
+                                process: 0
+                            });
+                            document.getElementById(newMushroom).classList.add("mushrooms");
+                            player[pc].item = ingredients[mushroomId];
+                        }
                     }
                 }
                 //player is holding an item
@@ -163,7 +189,10 @@ document.onkeydown = function (e) {
                     //general
                     if (worldObject[player[pc].facing.y][player[pc].facing.x] == null) {
                         var canPlace = true;
-                        if (player[pc].item.type == "ingredients") {
+                        if (player[pc].facing.world == 20) {
+                            canPlace = false;
+                        }
+                        else if (player[pc].item.type == "ingredients") {
                             if (player[pc].facing.world == 2) {
                                 canPlace = false;
                             }
@@ -275,7 +304,7 @@ document.onkeydown = function (e) {
                                             }
                                         }
                                         if (foodGood) {
-                                            var bonus = Math.round(6 * (50-foodOrders[q].process)/orderExpires);
+                                            var bonus = Math.round(6 * (50 - foodOrders[q].process) / orderExpires);
                                             points += (20 + bonus);
                                             pointUpdate();
                                             emptyItem(player[pc], player[pc].item);

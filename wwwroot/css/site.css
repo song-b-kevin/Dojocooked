@@ -105,6 +105,18 @@ for details on configuring this project to bundle and minify static web assets. 
   line-height: 0;
 }
 
+.wall {
+  background-color: transparent;
+  background-image: url('../img/wall.png');
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  height: 75px;
+  width: 75px;
+  margin-bottom: 0;
+  display: inline-block;
+}
+
 .floor {
   background-image: linear-gradient(45deg, #828C71 25%, transparent 25%), linear-gradient(-45deg, #828C71 25%, transparent 25%), linear-gradient(45deg, transparent 75%, #828C71 75%), linear-gradient(-45deg, transparent 75%, #828C71 75%);
   background-size: 75px 75px;
@@ -240,6 +252,19 @@ for details on configuring this project to bundle and minify static web assets. 
   display: inline-block;
 }
 
+.mushroom_box {
+  background-color: #AD7647;
+  background-image: url('../img/mushroombox.png');
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  height: 75px;
+  width: 75px;
+  margin-bottom: 0;
+  border: 1px solid black;
+  display: inline-block;
+}
+
 /*** Moving Items ***/
 .fire_exts {
   background-color: transparent;
@@ -325,6 +350,17 @@ for details on configuring this project to bundle and minify static web assets. 
   height: 75px;
   width: 75px;
   background-image: url('../img/tomato.png');
+  background-position: center;
+  background-size: contain;
+  background-repeat: no-repeat;
+  position: absolute;
+}
+
+.mushrooms {
+  background-color: transparent;
+  height: 75px;
+  width: 75px;
+  background-image: url('../img/mushroom.png');
   background-position: center;
   background-size: contain;
   background-repeat: no-repeat;

@@ -48,7 +48,9 @@ var worldDict = {
     11: "floor", //player_one
     12: "floor", //player_two
     13: "onion_box",
-    14: "tomato_box"
+    14: "tomato_box",
+    15: "mushroom_box",
+    20: "wall"
 };
 
 function drawWorld() {
@@ -161,6 +163,7 @@ function drawWorld() {
                             x: column,
                             y: row + 1
                         },
+                        action: null,
                         direction: "down",
                         step: 1,
                         css: document.getElementById("player_one").style
@@ -182,6 +185,7 @@ function drawWorld() {
                             x: column,
                             y: row + 1
                         },
+                        action: null,
                         direction: "down",
                         step: 1,
                         css: document.getElementById("player_two").style
@@ -467,6 +471,10 @@ function emptyItem(player, object) {
             element.removeChild(element.getElementsByClassName("process_bar")[0]);
         }
     }
+}
+
+function actionUsed(player) {
+    player.action = setTimeout(function() {player.action = null}, 70);
 }
 
 /***Game Initiation***/

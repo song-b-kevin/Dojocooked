@@ -17,3 +17,10 @@ var tomatoSoup = {
     timer: null,
     process: 0
 }
+
+var mushroomSoup = {
+    type: "pot",
+    order: ["mushroom", "mushroom", "mushroom"],
+    timer: null,
+    process: 0
+}
